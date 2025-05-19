@@ -1,0 +1,109 @@
+{
+  "name": "btcturbo-dash",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://btc-turbo-api-production.up.railway.app/api/v1/analise-tecnica-emas",
+        "options": {}
+      },
+      "id": "3df5e19a-3349-4b2d-9288-3c218029fafd",
+      "name": "Chamar API BTC Turbo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        460,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "path": "painel-btc",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0e663807-2da7-4078-9f4f-531671796632",
+      "name": "Webhook de entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        0
+      ],
+      "webhookId": "painelbtc123"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        0
+      ],
+      "id": "722eebdb-3fa2-4076-85f1-e4ea66919ec2",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <title>Velocímetro BTC</title>\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <style>\n    /* ================================\n       🎨 ESTILO GERAL DA PÁGINA\n    ================================= */\n    body {\n      background: #0f111a;\n      color: #fff;\n      text-align: center;\n      font-family: 'Arial', sans-serif;\n      padding: 30px;\n    }\n\n    /* ================================\n       🧱 CARD DO GRÁFICO\n    ================================= */\n    .grafico {\n      width: 240px;\n      margin: auto;\n      background: #161b22;\n      border-radius: 20px;\n      padding: 20px 10px;\n    }\n\n    /* ================================\n       📏 CONTAINER PARA O CANVAS\n    ================================= */\n    .gauge-wrapper {\n      height: 160px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n\n    /* ================================\n       🏷️ TEXTO DE CLASSIFICAÇÃO\n    ================================= */\n    .classificacao {\n      margin-top: 12px;\n      font-weight: bold;\n      font-size: 15px;\n    }\n\n    /* ================================\n       🏷️ TEXTO DE OBSERVAÇÃO\n    ================================= */\n    .observacao {\n      margin-top: 10px;\n      font-size: 10px;\n      color: #ccc;\n      padding: 0 10px;\n      white-space: pre-line;\n      word-break: break-word;\n    }\n\n    .titulo {\n      font-size: 16px;\n      font-weight: bold;\n      margin-bottom: 10px;\n    }\n\n    .badge {\n      background-color: #f7931a;\n      color: #fff;\n      font-size: 12px;\n      font-weight: bold;\n      padding: 2px 8px;\n      border-radius: 6px;\n      display: inline-block;\n      margin-bottom: 5px;\n    }\n  </style>\n</head>\n<body>\n\n  <div class=\"grafico\">\n    <div class=\"badge\">15m</div>\n    <!--<div class=\"titulo\">EMA9 x EMA21</div>-->\n\n    <div class=\"gauge-wrapper\">\n      <canvas id=\"gaugeChart\"></canvas>\n    </div>\n\n    <div id=\"label\" class=\"classificacao\">{{ $json.emas[\"15m\"].analise.classificacao }}</div>\n    <div class=\"observacao\">{{ $json.emas[\"15m\"].analise.observacao }}</div>\n  </div>\n\n  <script>\n    const score = {{ $json.emas[\"15m\"].analise.score }};\n    const restante = 10 - score;\n\n    const cor = score >= 7 ? '#00e676' :\n                score >= 4 ? '#ffc107' :\n                '#f44336';\n\n    const ctx = document.getElementById('gaugeChart').getContext('2d');\n\n    new Chart(ctx, {\n      type: 'doughnut',\n      data: {\n        datasets: [{\n          data: [score, restante],\n          backgroundColor: [cor, '#6D676E'],\n          borderRadius: [0, 0],\n          borderWidth: 0,\n        }]\n      },\n      options: {\n        responsive: true,\n        rotation: -120,\n        circumference: 240,\n        cutout: '80%',\n        plugins: {\n          tooltip: { enabled: false },\n          legend: { display: false }\n        }\n      },\n      plugins: [\n        {\n          id: 'centerText',\n          beforeDraw: (chart) => {\n            const { width, height } = chart;\n            const ctx = chart.ctx;\n            const scoreText = String(score);\n\n            ctx.save();\n            ctx.font = \"bold 26px Arial\";\n            ctx.fillStyle = \"#fff\";\n            ctx.textAlign = \"center\";\n            ctx.textBaseline = \"middle\";\n            ctx.fillText(scoreText, width / 2, height / 2 + 10);\n            ctx.restore();\n          }\n        }\n      ]\n    });\n\n    document.getElementById('label').style.color = cor;\n  </script>\n\n</body>\n</html>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        0
+      ],
+      "id": "cfc6c27c-60af-4c00-8eea-01b13af5aa60",
+      "name": "HTML1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook de entrada": {
+      "main": [
+        [
+          {
+            "node": "Chamar API BTC Turbo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar API BTC Turbo": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7e5d89cf-dcae-479f-88d2-ba4f997ff858",
+  "meta": {
+    "instanceId": "df70ff04e1b45ccc1482849dfc7bcfb5dca43eb687554e47ff8dc55a9291bcc5"
+  },
+  "id": "qhxgRSRivNdW6gUp",
+  "tags": []
+}
