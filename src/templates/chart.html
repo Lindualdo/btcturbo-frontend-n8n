@@ -1,0 +1,131 @@
+
+<div class="grafico">
+  <div class="grafico-titulo">
+    <span class="grafico-label">Tempo gráfico</span>
+    <span class="etiqueta-invertida">1w</span>
+  </div>
+
+  <div class="gauge-wrapper">
+    <canvas id="gaugeChart_1w"></canvas>
+  </div>
+
+  <div id="label_1w" class="classificacao">{{ $json.emas["1w"].analise.classificacao }}</div>
+
+  <div class="tooltip">
+    ℹ️
+    <span class="tooltip-text">{{ $json.emas["1w"].analise.observacao }}</span>
+  </div>
+</div>
+
+<script>
+  const score_1w = {{ $json.emas["1w"].analise.score }};
+  const restante_1w = 10 - score_1w;
+
+  const cor_1w = score_1w >= 7 ? '#00e676' :
+                   score_1w >= 4 ? '#ffc107' :
+                   '#f44336';
+
+  const ctx_1w = document.getElementById('gaugeChart_1w').getContext('2d');
+
+  new Chart(ctx_1w, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [score_1w, restante_1w],
+        backgroundColor: [cor_1w, '#6D676E'],
+        borderRadius: [0, 0],
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      rotation: -120,
+      circumference: 240,
+      cutout: '80%',
+      plugins: {
+        tooltip: { enabled: false },
+        legend: { display: false }
+      }
+    },
+    plugins: [{
+      id: 'centerText_1w',
+      beforeDraw: (chart) => {
+        const { width, height } = chart;
+        const ctx = chart.ctx;
+        const scoreText = String(score_1w);
+        ctx.save();
+        ctx.font = "bold 26px Arial";
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(scoreText, width / 2, height / 2 + 10);
+        ctx.restore();
+      }
+    }]
+  });
+
+  document.getElementById('label_1w').style.color = cor_1w;
+</script>
+
+<style>
+  .grafico-titulo {
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #f7931a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .grafico-label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .etiqueta-invertida {
+    background-color: #fff;
+    color: #f7931a;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 16px;
+    color: #aaa;
+    margin-top: 10px;
+  }
+
+  .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    width: 240px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: normal;
+    border: 1px solid #f7931a;
+  }
+</style>

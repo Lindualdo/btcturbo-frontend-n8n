@@ -8,8 +8,8 @@ Interface visual dos indicadores de risco e tendência do Bitcoin.
 - `public/`: Arquivos públicos para PWA (ícone, manifest)
 
 ## 🚀 Deploy
-Fluxos devem ser importados no N8N e os templates podem ser atualizados via Git.
-Tudo funcionando nesta versão
+- Dash tendencia completo e funcionando - falta apenas o consolidado
+- Esse será o workflow padrão usado como template para os demais
 
 ## 📄 Licença
 MIT

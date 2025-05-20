@@ -1,0 +1,446 @@
+{
+  "name": "dash-tendencia",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://btc-turbo-api-production.up.railway.app/api/v1/analise-tecnica-emas",
+        "options": {}
+      },
+      "id": "3df5e19a-3349-4b2d-9288-3c218029fafd",
+      "name": "Chamar API BTC Turbo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "path": "painel-btc",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0e663807-2da7-4078-9f4f-531671796632",
+      "name": "Webhook de entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        120
+      ],
+      "webhookId": "painelbtc123"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1900,
+        140
+      ],
+      "id": "722eebdb-3fa2-4076-85f1-e4ea66919ec2",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "html": "\n<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Análise BTC - Força da Tendência</title>\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <style>\n    body {\n      background: #0f111a;\n      color: #fff;\n      text-align: center;\n      font-family: 'Arial', sans-serif;\n      padding: 20px;\n      margin: 0;\n      min-height: 100vh;\n      overflow-x: hidden;\n    }\n\n    h1 {\n      font-size: 24px;\n      color: #f7931a;\n      margin-bottom: 20px;\n      padding: 0 10px;\n      font-weight: 700;\n    }\n\n    .menu-scroll {\n      display: flex;\n      overflow-x: auto;\n      gap: 10px;\n      margin-bottom: 30px;\n      padding: 8px;\n      scrollbar-width: none;\n      -ms-overflow-style: none;\n      border-bottom: 1px solid #333;\n    }\n\n    .menu-scroll::-webkit-scrollbar {\n      display: none;\n    }\n\n    .menu-scroll a {\n      flex: 0 0 auto;\n      background-color: transparent;\n      color: #fff;\n      font-weight: 600;\n      text-decoration: none;\n      padding: 10px 14px;\n      border-bottom: 3px solid transparent;\n      white-space: nowrap;\n      transition: 0.3s;\n      font-size: 16px;\n    }\n\n    .menu-scroll a:hover,\n    .menu-scroll a:focus {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n    }\n\n    .menu-scroll a.ativo {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n      background-color: #1e1e1e;\n    }\n\n    .dashboard-grid {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      gap: 20px;\n      padding-bottom: 30px;\n    }\n\n    .grafico {\n      width: 240px;\n      background: #161b22;\n      border-radius: 20px;\n      padding: 20px 10px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.6);\n    }\n\n    .gauge-wrapper {\n      height: 160px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n\n    .classificacao {\n      margin-top: 12px;\n      font-weight: bold;\n      font-size: 18px;\n    }\n\n    .observacao {\n      margin-top: 10px;\n      font-size: 13px;\n      color: #ccc;\n      padding: 0 10px;\n      white-space: pre-line;\n      word-break: break-word;\n      line-height: 1.4;\n    }\n\n    .badge {\n      background-color: #f7931a;\n      color: #fff;\n      font-size: 13px;\n      font-weight: bold;\n      padding: 3px 9px;\n      border-radius: 6px;\n      display: inline-block;\n      margin-bottom: 5px;\n    }\n\n    @media (max-width: 600px) {\n      .grafico {\n        width: 92vw;\n        margin-bottom: 20px;\n      }\n\n      .menu-scroll a {\n        font-size: 16px;\n        padding: 10px 14px;\n      }\n    }\n  </style>\n</head>\n<body>\n\n  <h1>Análise BTC - Força da Tendência</h1>\n\n  <div class=\"menu-scroll\">\n    <a href=\"/webhook/painel-forca-medias\" class=\"ativo\">Tendência</a>\n    <a href=\"/webhook/painel-forca-ciclos\">Ciclos</a>\n    <a href=\"/webhook/painel-forca-fundamentos\">Fundamentos</a>\n    <a href=\"/webhook/painel-risco-financeiro\">R. Financeiro</a>\n    <a href=\"/webhook/painel-risco-estrutura\">R. Estrutura</a>\n    <a href=\"/webhook/painel-risco-macro\">R. Macro</a>\n    <a href=\"/webhook/painel-risco-tecnico\">R. Técnico</a>\n    <a href=\"/webhook/painel-consolidado\">Consolidado</a>\n  </div>\n\n  <div class=\"dashboard-grid\">\n    {{ $json['15m'] }} \n    {{ $json[\"1h\"] }}\n    {{ $json['4h'] }} \n    {{ $json['1d'] }} \n    {{ $json[\"1w\"] }}\n  </div>\n\n</body>\n</html>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1640,
+        140
+      ],
+      "id": "cfc6c27c-60af-4c00-8eea-01b13af5aa60",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {
+        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">15m</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_15m\"></canvas>\n  </div>\n\n  <div id=\"label_15m\" class=\"classificacao\">{{ $json.emas[\"15m\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"15m\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_15m = {{ $json.emas[\"15m\"].analise.score }};\n  const restante_15m = 10 - score_15m;\n\n  const cor_15m = score_15m >= 7 ? '#00e676' :\n                  score_15m >= 4 ? '#ffc107' :\n                  '#f44336';\n\n  const ctx_15m = document.getElementById('gaugeChart_15m').getContext('2d');\n\n  new Chart(ctx_15m, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_15m, restante_15m],\n        backgroundColor: [cor_15m, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [\n      {\n        id: 'centerText_15m',\n        beforeDraw: (chart) => {\n          const { width, height } = chart;\n          const ctx = chart.ctx;\n          const scoreText = String(score_15m);\n\n          ctx.save();\n          ctx.font = \"bold 26px Arial\";\n          ctx.fillStyle = \"#fff\";\n          ctx.textAlign = \"center\";\n          ctx.textBaseline = \"middle\";\n          ctx.fillText(scoreText, width / 2, height / 2 + 10);\n          ctx.restore();\n        }\n      }\n    ]\n  });\n\n  document.getElementById('label_15m').style.color = cor_15m;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        500
+      ],
+      "id": "95212f96-7abc-411b-9f7a-c81c78350980",
+      "name": "15m"
+    },
+    {
+      "parameters": {
+        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1h</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1h\"></canvas>\n  </div>\n\n  <div id=\"label_1h\" class=\"classificacao\">{{ $json.emas[\"1h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1h = {{ $json.emas[\"1h\"].analise.score }};\n  const restante_1h = 10 - score_1h;\n\n  const cor_1h = score_1h >= 7 ? '#00e676' :\n                   score_1h >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1h = document.getElementById('gaugeChart_1h').getContext('2d');\n\n  new Chart(ctx_1h, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1h, restante_1h],\n        backgroundColor: [cor_1h, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1h',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1h);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1h').style.color = cor_1h;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        320
+      ],
+      "id": "26f8c0eb-472a-4fd7-a010-a459435b0cbc",
+      "name": "1h"
+    },
+    {
+      "parameters": {
+        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">4h</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_4h\"></canvas>\n  </div>\n\n  <div id=\"label_4h\" class=\"classificacao\">{{ $json.emas[\"4h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"4h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_4h = {{ $json.emas[\"4h\"].analise.score }};\n  const restante_4h = 10 - score_4h;\n\n  const cor_4h = score_4h >= 7 ? '#00e676' :\n                   score_4h >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_4h = document.getElementById('gaugeChart_4h').getContext('2d');\n\n  new Chart(ctx_4h, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_4h, restante_4h],\n        backgroundColor: [cor_4h, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_4h',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_4h);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_4h').style.color = cor_4h;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        140
+      ],
+      "id": "ffd91526-295b-4fb9-a06a-556c26267bae",
+      "name": "4h"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1400,
+        100
+      ],
+      "id": "31c1d5ee-ae7f-42f6-8482-7fb5d95e8529",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1d</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1d\"></canvas>\n  </div>\n\n  <div id=\"label_1d\" class=\"classificacao\">{{ $json.emas[\"1d\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1d\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1d = {{ $json.emas[\"1d\"].analise.score }};\n  const restante_1d = 10 - score_1d;\n\n  const cor_1d = score_1d >= 7 ? '#00e676' :\n                   score_1d >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1d = document.getElementById('gaugeChart_1d').getContext('2d');\n\n  new Chart(ctx_1d, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1d, restante_1d],\n        backgroundColor: [cor_1d, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1d',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1d);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1d').style.color = cor_1d;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        -60
+      ],
+      "id": "70f0efc3-c06f-4167-88ab-de83af9b992b",
+      "name": "1d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da008280-3dca-47c0-993c-95c5f819001a",
+              "name": "15m",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        500
+      ],
+      "id": "e4b0ea41-0857-41c3-bc28-dd2202767318",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
+              "name": "1h",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        320
+      ],
+      "id": "42145cc6-0845-4500-8d87-c91725ef7af4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
+              "name": "4h",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        140
+      ],
+      "id": "f72153a2-1db5-4cdf-ad7f-3e5c6631a7f5",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ccfb8c8-417a-48cb-918a-e7d8adff64ba",
+              "name": "1d",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        -60
+      ],
+      "id": "2ed801b7-d102-46e9-ae2e-7a7e5a464896",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1w</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1w\"></canvas>\n  </div>\n\n  <div id=\"label_1w\" class=\"classificacao\">{{ $json.emas[\"1w\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1w\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1w = {{ $json.emas[\"1w\"].analise.score }};\n  const restante_1w = 10 - score_1w;\n\n  const cor_1w = score_1w >= 7 ? '#00e676' :\n                   score_1w >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1w = document.getElementById('gaugeChart_1w').getContext('2d');\n\n  new Chart(ctx_1w, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1w, restante_1w],\n        backgroundColor: [cor_1w, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1w',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1w);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1w').style.color = cor_1w;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        -240
+      ],
+      "id": "5d10e775-111e-4312-a48e-7cb6fa6472d8",
+      "name": "1w"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ccfb8c8-417a-48cb-918a-e7d8adff64ba",
+              "name": "1w",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        860,
+        -240
+      ],
+      "id": "bf09f55d-256e-4c2e-b4db-8202ca9461d2",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook de entrada": {
+      "main": [
+        [
+          {
+            "node": "Chamar API BTC Turbo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar API BTC Turbo": {
+      "main": [
+        [
+          {
+            "node": "15m",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "1h",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "4h",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "1d",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "1w",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "15m": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4h": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1h": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1d": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "1w": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a321884e-8c74-4739-b33b-44cf48c0e122",
+  "meta": {
+    "instanceId": "df70ff04e1b45ccc1482849dfc7bcfb5dca43eb687554e47ff8dc55a9291bcc5"
+  },
+  "id": "qhxgRSRivNdW6gUp",
+  "tags": []
+}
