@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -100,
-        120
+        -120,
+        200
       ]
     },
     {
@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -320,
-        120
+        -340,
+        200
       ],
       "webhookId": "painelbtc123"
     },
@@ -40,92 +40,40 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
       "position": [
-        1900,
-        140
+        1940,
+        200
       ],
       "id": "722eebdb-3fa2-4076-85f1-e4ea66919ec2",
       "name": "Respond to Webhook"
     },
     {
       "parameters": {
-        "html": "\n<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>Análise BTC - Força da Tendência</title>\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <style>\n    body {\n      background: #0f111a;\n      color: #fff;\n      text-align: center;\n      font-family: 'Arial', sans-serif;\n      padding: 20px;\n      margin: 0;\n      min-height: 100vh;\n      overflow-x: hidden;\n    }\n\n    h1 {\n      font-size: 24px;\n      color: #f7931a;\n      margin-bottom: 20px;\n      padding: 0 10px;\n      font-weight: 700;\n    }\n\n    .menu-scroll {\n      display: flex;\n      overflow-x: auto;\n      gap: 10px;\n      margin-bottom: 30px;\n      padding: 8px;\n      scrollbar-width: none;\n      -ms-overflow-style: none;\n      border-bottom: 1px solid #333;\n    }\n\n    .menu-scroll::-webkit-scrollbar {\n      display: none;\n    }\n\n    .menu-scroll a {\n      flex: 0 0 auto;\n      background-color: transparent;\n      color: #fff;\n      font-weight: 600;\n      text-decoration: none;\n      padding: 10px 14px;\n      border-bottom: 3px solid transparent;\n      white-space: nowrap;\n      transition: 0.3s;\n      font-size: 16px;\n    }\n\n    .menu-scroll a:hover,\n    .menu-scroll a:focus {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n    }\n\n    .menu-scroll a.ativo {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n      background-color: #1e1e1e;\n    }\n\n    .dashboard-grid {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      gap: 20px;\n      padding-bottom: 30px;\n    }\n\n    .grafico {\n      width: 240px;\n      background: #161b22;\n      border-radius: 20px;\n      padding: 20px 10px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.6);\n    }\n\n    .gauge-wrapper {\n      height: 160px;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n\n    .classificacao {\n      margin-top: 12px;\n      font-weight: bold;\n      font-size: 18px;\n    }\n\n    .observacao {\n      margin-top: 10px;\n      font-size: 13px;\n      color: #ccc;\n      padding: 0 10px;\n      white-space: pre-line;\n      word-break: break-word;\n      line-height: 1.4;\n    }\n\n    .badge {\n      background-color: #f7931a;\n      color: #fff;\n      font-size: 13px;\n      font-weight: bold;\n      padding: 3px 9px;\n      border-radius: 6px;\n      display: inline-block;\n      margin-bottom: 5px;\n    }\n\n    @media (max-width: 600px) {\n      .grafico {\n        width: 92vw;\n        margin-bottom: 20px;\n      }\n\n      .menu-scroll a {\n        font-size: 16px;\n        padding: 10px 14px;\n      }\n    }\n  </style>\n</head>\n<body>\n\n  <h1>Análise BTC - Força da Tendência</h1>\n\n  <div class=\"menu-scroll\">\n    <a href=\"/webhook/painel-forca-medias\" class=\"ativo\">Tendência</a>\n    <a href=\"/webhook/painel-forca-ciclos\">Ciclos</a>\n    <a href=\"/webhook/painel-forca-fundamentos\">Fundamentos</a>\n    <a href=\"/webhook/painel-risco-financeiro\">R. Financeiro</a>\n    <a href=\"/webhook/painel-risco-estrutura\">R. Estrutura</a>\n    <a href=\"/webhook/painel-risco-macro\">R. Macro</a>\n    <a href=\"/webhook/painel-risco-tecnico\">R. Técnico</a>\n    <a href=\"/webhook/painel-consolidado\">Consolidado</a>\n  </div>\n\n  <div class=\"dashboard-grid\">\n    {{ $json['15m'] }} \n    {{ $json[\"1h\"] }}\n    {{ $json['4h'] }} \n    {{ $json['1d'] }} \n    {{ $json[\"1w\"] }}\n  </div>\n\n</body>\n</html>\n"
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        1640,
-        140
-      ],
-      "id": "cfc6c27c-60af-4c00-8eea-01b13af5aa60",
-      "name": "HTML1"
-    },
-    {
-      "parameters": {
-        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">15m</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_15m\"></canvas>\n  </div>\n\n  <div id=\"label_15m\" class=\"classificacao\">{{ $json.emas[\"15m\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"15m\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_15m = {{ $json.emas[\"15m\"].analise.score }};\n  const restante_15m = 10 - score_15m;\n\n  const cor_15m = score_15m >= 7 ? '#00e676' :\n                  score_15m >= 4 ? '#ffc107' :\n                  '#f44336';\n\n  const ctx_15m = document.getElementById('gaugeChart_15m').getContext('2d');\n\n  new Chart(ctx_15m, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_15m, restante_15m],\n        backgroundColor: [cor_15m, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [\n      {\n        id: 'centerText_15m',\n        beforeDraw: (chart) => {\n          const { width, height } = chart;\n          const ctx = chart.ctx;\n          const scoreText = String(score_15m);\n\n          ctx.save();\n          ctx.font = \"bold 26px Arial\";\n          ctx.fillStyle = \"#fff\";\n          ctx.textAlign = \"center\";\n          ctx.textBaseline = \"middle\";\n          ctx.fillText(scoreText, width / 2, height / 2 + 10);\n          ctx.restore();\n        }\n      }\n    ]\n  });\n\n  document.getElementById('label_15m').style.color = cor_15m;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        600,
-        500
-      ],
-      "id": "95212f96-7abc-411b-9f7a-c81c78350980",
-      "name": "15m"
-    },
-    {
-      "parameters": {
-        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1h</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1h\"></canvas>\n  </div>\n\n  <div id=\"label_1h\" class=\"classificacao\">{{ $json.emas[\"1h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1h = {{ $json.emas[\"1h\"].analise.score }};\n  const restante_1h = 10 - score_1h;\n\n  const cor_1h = score_1h >= 7 ? '#00e676' :\n                   score_1h >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1h = document.getElementById('gaugeChart_1h').getContext('2d');\n\n  new Chart(ctx_1h, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1h, restante_1h],\n        backgroundColor: [cor_1h, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1h',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1h);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1h').style.color = cor_1h;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        600,
-        320
-      ],
-      "id": "26f8c0eb-472a-4fd7-a010-a459435b0cbc",
-      "name": "1h"
-    },
-    {
-      "parameters": {
-        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">4h</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_4h\"></canvas>\n  </div>\n\n  <div id=\"label_4h\" class=\"classificacao\">{{ $json.emas[\"4h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"4h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_4h = {{ $json.emas[\"4h\"].analise.score }};\n  const restante_4h = 10 - score_4h;\n\n  const cor_4h = score_4h >= 7 ? '#00e676' :\n                   score_4h >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_4h = document.getElementById('gaugeChart_4h').getContext('2d');\n\n  new Chart(ctx_4h, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_4h, restante_4h],\n        backgroundColor: [cor_4h, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_4h',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_4h);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_4h').style.color = cor_4h;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        600,
-        140
-      ],
-      "id": "ffd91526-295b-4fb9-a06a-556c26267bae",
-      "name": "4h"
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combineBy": "combineByPosition",
-        "numberInputs": 5,
+        "numberInputs": 6,
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.1,
       "position": [
-        1400,
-        100
+        1460,
+        140
       ],
       "id": "31c1d5ee-ae7f-42f6-8482-7fb5d95e8529",
       "name": "Merge"
     },
     {
       "parameters": {
-        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1d</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1d\"></canvas>\n  </div>\n\n  <div id=\"label_1d\" class=\"classificacao\">{{ $json.emas[\"1d\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1d\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1d = {{ $json.emas[\"1d\"].analise.score }};\n  const restante_1d = 10 - score_1d;\n\n  const cor_1d = score_1d >= 7 ? '#00e676' :\n                   score_1d >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1d = document.getElementById('gaugeChart_1d').getContext('2d');\n\n  new Chart(ctx_1d, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1d, restante_1d],\n        backgroundColor: [cor_1d, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1d',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1d);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1d').style.color = cor_1d;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Score consolidado</span>\n    <!--<span class=\"etiqueta-invertida\">Final</span>-->\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_consolidado\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n  <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.consolidado.classificacao }}</div>\n  \n  <div class=\"tooltip\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.consolidado.racional }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_consolidado');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.consolidado.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        600,
-        -60
+        580,
+        -220
       ],
-      "id": "70f0efc3-c06f-4167-88ab-de83af9b992b",
-      "name": "1d"
+      "id": "f9d427c8-8304-477d-9b07-a4460c055684",
+      "name": "consolidado"
     },
     {
       "parameters": {
@@ -133,7 +81,7 @@
           "assignments": [
             {
               "id": "da008280-3dca-47c0-993c-95c5f819001a",
-              "name": "15m",
+              "name": "score_consolidado",
               "value": "={{ $json.html }}",
               "type": "string"
             }
@@ -144,92 +92,23 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        860,
-        500
+        920,
+        -220
       ],
-      "id": "e4b0ea41-0857-41c3-bc28-dd2202767318",
-      "name": "Edit Fields2"
+      "id": "baa4cbed-5c8a-42ae-a532-92141575b7ef",
+      "name": "set_consolidado"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
-              "name": "1h",
-              "value": "={{ $json.html }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        860,
-        320
-      ],
-      "id": "42145cc6-0845-4500-8d87-c91725ef7af4",
-      "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
-              "name": "4h",
-              "value": "={{ $json.html }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        860,
-        140
-      ],
-      "id": "f72153a2-1db5-4cdf-ad7f-3e5c6631a7f5",
-      "name": "Edit Fields3"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0ccfb8c8-417a-48cb-918a-e7d8adff64ba",
-              "name": "1d",
-              "value": "={{ $json.html }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        860,
-        -60
-      ],
-      "id": "2ed801b7-d102-46e9-ae2e-7a7e5a464896",
-      "name": "Edit Fields4"
-    },
-    {
-      "parameters": {
-        "html": "\n<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">1w</span>\n  </div>\n\n  <div class=\"gauge-wrapper\">\n    <canvas id=\"gaugeChart_1w\"></canvas>\n  </div>\n\n  <div id=\"label_1w\" class=\"classificacao\">{{ $json.emas[\"1w\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    ℹ️\n    <span class=\"tooltip-text\">{{ $json.emas[\"1w\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n  const score_1w = {{ $json.emas[\"1w\"].analise.score }};\n  const restante_1w = 10 - score_1w;\n\n  const cor_1w = score_1w >= 7 ? '#00e676' :\n                   score_1w >= 4 ? '#ffc107' :\n                   '#f44336';\n\n  const ctx_1w = document.getElementById('gaugeChart_1w').getContext('2d');\n\n  new Chart(ctx_1w, {\n    type: 'doughnut',\n    data: {\n      datasets: [{\n        data: [score_1w, restante_1w],\n        backgroundColor: [cor_1w, '#6D676E'],\n        borderRadius: [0, 0],\n        borderWidth: 0,\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -120,\n      circumference: 240,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      }\n    },\n    plugins: [{\n      id: 'centerText_1w',\n      beforeDraw: (chart) => {\n        const { width, height } = chart;\n        const ctx = chart.ctx;\n        const scoreText = String(score_1w);\n        ctx.save();\n        ctx.font = \"bold 26px Arial\";\n        ctx.fillStyle = \"#fff\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(scoreText, width / 2, height / 2 + 10);\n        ctx.restore();\n      }\n    }]\n  });\n\n  document.getElementById('label_1w').style.color = cor_1w;\n</script>\n\n<style>\n  .grafico-titulo {\n    margin-bottom: 10px;\n    font-size: 15px;\n    font-weight: bold;\n    color: #f7931a;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n  }\n\n  .grafico-label {\n    font-size: 16px;\n    font-weight: 600;\n  }\n\n  .etiqueta-invertida {\n    background-color: #fff;\n    color: #f7931a;\n    font-weight: bold;\n    font-size: 13px;\n    padding: 2px 8px;\n    border-radius: 6px;\n  }\n\n  .tooltip {\n    position: relative;\n    display: inline-block;\n    cursor: pointer;\n    font-size: 16px;\n    color: #aaa;\n    margin-top: 10px;\n  }\n\n  .tooltip:hover .tooltip-text {\n    visibility: visible;\n    opacity: 1;\n  }\n\n  .tooltip-text {\n    visibility: hidden;\n    width: 240px;\n    background-color: #333;\n    color: #fff;\n    text-align: left;\n    border-radius: 6px;\n    padding: 12px;\n    position: absolute;\n    z-index: 1;\n    bottom: 125%;\n    left: 50%;\n    transform: translateX(-50%);\n    opacity: 0;\n    transition: opacity 0.3s ease;\n    font-size: 14px;\n    line-height: 1.5;\n    white-space: normal;\n    border: 1px solid #f7931a;\n  }\n</style>\n"
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico - 1W</span>\n    <!--<span class=\"etiqueta-invertida\">1w</span>-->\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_1w\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n   <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.emas[\"1w\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.emas[\"1w\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_1w');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.emas[\"1w\"].analise.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n"
       },
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        600,
-        -240
+        580,
+        -40
       ],
-      "id": "5d10e775-111e-4312-a48e-7cb6fa6472d8",
+      "id": "872ccd19-c8a8-47e0-ac09-11de61bc7c61",
       "name": "1w"
     },
     {
@@ -249,11 +128,168 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        860,
-        -240
+        920,
+        -40
       ],
       "id": "bf09f55d-256e-4c2e-b4db-8202ca9461d2",
-      "name": "Edit Fields"
+      "name": "set-1w"
+    },
+    {
+      "parameters": {
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico - 1D</span>\n    <!--<span class=\"etiqueta-invertida\">1d</span>-->\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_1d\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n  <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.emas[\"1d\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n     <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.emas[\"1d\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_1d');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.emas[\"1d\"].analise.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        140
+      ],
+      "id": "f29c5590-8f5b-4072-9684-051257065bf7",
+      "name": "1d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ccfb8c8-417a-48cb-918a-e7d8adff64ba",
+              "name": "1d",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        140
+      ],
+      "id": "2ed801b7-d102-46e9-ae2e-7a7e5a464896",
+      "name": "set-1d"
+    },
+    {
+      "parameters": {
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico - 4H</span>\n    <!--<span class=\"etiqueta-invertida\">4h</span>-->\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_4h\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n  <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.emas[\"4h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n     <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.emas[\"4h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_4h');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.emas[\"4h\"].analise.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        320
+      ],
+      "id": "4249d8eb-6641-49e3-a76e-2c7a28417dc7",
+      "name": "4h"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
+              "name": "4h",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        320
+      ],
+      "id": "f72153a2-1db5-4cdf-ad7f-3e5c6631a7f5",
+      "name": "set-4h"
+    },
+    {
+      "parameters": {
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico - 1H</span>\n    <!--<span class=\"etiqueta-invertida\">1h</span>-->\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_1h\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n  <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.emas[\"1h\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.emas[\"1h\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_1h');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.emas[\"1h\"].analise.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        500
+      ],
+      "id": "cd1e247b-f438-44f4-8c7c-a22e2f28bbe8",
+      "name": "1h"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3990d1c-0751-4e36-8429-80d26dd0fde6",
+              "name": "1h",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        500
+      ],
+      "id": "42145cc6-0845-4500-8d87-c91725ef7af4",
+      "name": "set-1h"
+    },
+    {
+      "parameters": {
+        "html": "<div class=\"grafico\">\n  <div class=\"grafico-titulo\">\n    <span class=\"grafico-label\">Tempo gráfico</span>\n    <span class=\"etiqueta-invertida\">15m</span>\n  </div>\n\n  <div class=\"gauge-wrapper\" style=\"height: 180px;\">\n    <canvas id=\"gaugePonteiro_15m\" style=\"height: 100%; width: 100%;\"></canvas>\n  </div>\n\n  <div id=\"label_ponteiro\" class=\"classificacao\">{{ $json.emas[\"15m\"].analise.classificacao }}</div>\n\n  <div class=\"tooltip\">\n     <svg xmlns=\"http://www.w3.org/2000/svg\"\n       width=\"22\" height=\"22\" viewBox=\"0 0 24 24\"\n       fill=\"none\" stroke=\"#ccc\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"\n       class=\"info-icon\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      <line x1=\"12\" y1=\"16\" x2=\"12\" y2=\"12\" />\n      <line x1=\"12\" y1=\"8\" x2=\"12.01\" y2=\"8\" />\n  </svg>\n    <span class=\"tooltip-text\">{{ $json.emas[\"15m\"].analise.observacao }}</span>\n  </div>\n</div>\n\n<script>\n(function waitForCanvas() {\n  const canvas = document.getElementById('gaugePonteiro_15m');\n  if (!canvas || !canvas.getContext) {\n    return requestAnimationFrame(waitForCanvas);\n  }\n\n  const scoreReal = {{ $json.emas[\"15m\"].analise.score }};\n  const score = scoreReal * 10;\n  const ctx = canvas.getContext('2d');\n\n  new Chart(ctx, {\n    type: 'doughnut',\n    data: {\n      labels: ['Score'],\n      datasets: [{\n        data: [100],\n        backgroundColor: ['#0000'],\n        borderWidth: 0,\n        cutout: '80%',\n      }]\n    },\n    options: {\n      responsive: true,\n      rotation: -Math.PI,\n      circumference: Math.PI,\n      cutout: '80%',\n      plugins: {\n        tooltip: { enabled: false },\n        legend: { display: false }\n      },\n    },\n    plugins: [{\n      id: 'customGauge',\n      afterDraw: (chart) => {\n        const ctx = chart.ctx;\n        const angle = (score / 100) * Math.PI;\n        const cx = chart.width / 2;\n        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico\n        const r = chart.width / 2.2;\n\n        ctx.save();\n\n        const drawArc = (start, end, color) => {\n          ctx.beginPath();\n          ctx.arc(cx, cy, r, start, end);\n          ctx.strokeStyle = color;\n          ctx.lineWidth = 16;\n          ctx.lineCap = \"round\";\n          ctx.stroke();\n        };\n\n        drawArc(Math.PI, Math.PI + Math.PI * 0.2, \"#f44336\");      // vermelho\n        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, \"#ff5722\");   // laranja escuro\n        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, \"#ff9800\");   // laranja claro\n        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, \"#9acb82\");   // verde limão\n        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, \"#4caf50\");   // verde forte\n\n\n        const x = cx + r * Math.cos(Math.PI + angle);\n        const y = cy + r * Math.sin(Math.PI + angle);\n        ctx.beginPath();\n        ctx.moveTo(cx, cy);\n        ctx.lineTo(x, y);\n        ctx.strokeStyle = '#ccc';\n        ctx.lineWidth = 5;\n        ctx.stroke();\n\n        ctx.beginPath();\n        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);\n        ctx.fillStyle = '#ccc';\n        ctx.fill();\n\n        // 🔢 Texto central\n        ctx.font = \"bold 20px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        ctx.fillText(score.toFixed(0), cx, cy - 30);\n\n        // 🔢 Extremidades 0 e 100 alinhadas ao arco\n        ctx.font = \"bold 12px Arial\";\n        ctx.fillStyle = \"#888\";\n        ctx.textAlign = \"center\";\n        ctx.textBaseline = \"middle\";\n        \n        // \"0\" à esquerda (início do arco)\n        const x0 = cx + r * Math.cos(Math.PI);\n        const y0 = cy + r * Math.sin(Math.PI);\n        ctx.fillText(\"0\", x0, y0 + 20);\n        \n        // \"100\" à direita (fim do arco)\n        const x100 = cx + r * Math.cos(0);\n        const y100 = cy + r * Math.sin(0);\n        ctx.fillText(\"100\", x100 -6, y100 + 20);\n\n        ctx.restore();\n      }\n    }]\n  });\n})();\n</script>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        580,
+        700
+      ],
+      "id": "f8b91609-6c5f-4d3a-b5be-dc4d0100be4d",
+      "name": "15m"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "da008280-3dca-47c0-993c-95c5f819001a",
+              "name": "15m",
+              "value": "={{ $json.html }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        920,
+        700
+      ],
+      "id": "e4b0ea41-0857-41c3-bc28-dd2202767318",
+      "name": "set-15m"
+    },
+    {
+      "parameters": {
+        "html": "\n<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>BTC Turbo - Força da tendência de alta</title>\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n  <style>\n    body {\n      background: #0f111a;\n      color: #fff;\n      text-align: center;\n      font-family: 'Arial', sans-serif;\n      padding: 20px;\n      margin: 0;\n      min-height: 100vh;\n      overflow-x: hidden;\n    }\n\n    h1 {\n      font-size: 24px;\n      color: #f7931a;\n      margin-bottom: 20px;\n      padding: 0 10px;\n      font-weight: 700;\n    }\n\n      .menu-scroll {\n      display: flex;\n      justify-content: center; /* 🔸 Centraliza no desktop */\n      gap: 10px;\n      margin-bottom: 30px;\n      padding: 8px;\n      border-bottom: 1px solid #333;\n    }\n    \n    /* Ativa scroll horizontal apenas no mobile */\n    @media (max-width: 768px) {\n      .menu-scroll {\n        overflow-x: auto;\n        justify-content: flex-start;\n        -ms-overflow-style: none;\n        scrollbar-width: none;\n      }\n    \n      .menu-scroll::-webkit-scrollbar {\n        display: none;\n      }\n    }\n\n\n    .menu-scroll::-webkit-scrollbar {\n      display: none;\n    }\n\n    .menu-scroll a {\n      flex: 0 0 auto;\n      background-color: transparent;\n      color: #fff;\n      font-weight: 600;\n      text-decoration: none;\n      padding: 10px 14px;\n      border-bottom: 3px solid transparent;\n      white-space: nowrap;\n      transition: 0.3s;\n      font-size: 16px;\n    }\n\n    .menu-scroll a:hover,\n    .menu-scroll a:focus {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n    }\n\n    .menu-scroll a.ativo {\n      color: #f7931a;\n      border-bottom: 3px solid #f7931a;\n      background-color: #1e1e1e;\n    }\n\n    .dashboard-grid {\n      display: flex;\n      flex-wrap: wrap;\n      justify-content: center;\n      gap: 20px;\n      padding-bottom: 30px;\n    }\n\n    .grafico {\n      width: 240px;\n      background: #161b22;\n      border-radius: 20px;\n      padding: 20px 10px;\n      box-shadow: 0 0 10px rgba(0,0,0,0.6);\n    }\n\n    .gauge-wrapper {\n      height: 180px !important;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n    }\n\n    .info-icon {\n    width: 20px;\n    height: 20px;\n    cursor: pointer;\n    vertical-align: middle;\n   }\n      \n    .classificacao {\n      margin-top: 12px;\n      color: #ccc;\n      font-weight: bold;\n      font-size: 18px;\n    }\n\n    .observacao {\n      margin-top: 10px;\n      font-size: 13px;\n      color: #ccc;\n      padding: 0 10px;\n      white-space: pre-line;\n      word-break: break-word;\n      line-height: 1.4;\n    }\n\n    .badge {\n      background-color: #f7931a;\n      color: #fff;\n      font-size: 13px;\n      font-weight: bold;\n      padding: 3px 9px;\n      border-radius: 6px;\n      display: inline-block;\n      margin-bottom: 5px;\n    }\n\n    @media (max-width: 600px) {\n      .grafico {\n        width: 92vw;\n        margin-bottom: 20px;\n      }\n\n      .menu-scroll a {\n        font-size: 16px;\n        padding: 10px 14px;\n      }\n    }\n  </style>\n  \n</head>\n<body>\n\n  <h1>BTC Turbo - Força da tendência de alta</h1>\n\n  <div class=\"menu-scroll\">\n    <a href=\"/webhook/painel-forca-medias\" class=\"ativo\">Tendência</a>\n    <a href=\"/webhook/painel-forca-ciclos\">Ciclos</a>\n    <a href=\"/webhook/painel-forca-fundamentos\">Fundamentos</a>\n    <a href=\"/webhook/painel-risco-financeiro\">R. Financeiro</a>\n    <a href=\"/webhook/painel-risco-estrutura\">R. Estrutura</a>\n    <a href=\"/webhook/painel-risco-macro\">R. Macro</a>\n    <a href=\"/webhook/painel-risco-tecnico\">R. Técnico</a>\n    <a href=\"/webhook/painel-consolidado\">Consolidado</a>\n  </div>\n\n  <div class=\"dashboard-grid\">\n    {{ $json[\"score_consolidado\"] }}\n    {{ $json[\"1w\"] }}\n    {{ $json['1d'] }} \n    {{ $json[\"4h\"] }}\n    {{ $json['1h'] }} \n    {{ $json['15m'] }}\n  </div>\n\n</body>\n</html>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1700,
+        200
+      ],
+      "id": "cfc6c27c-60af-4c00-8eea-01b13af5aa60",
+      "name": "Template final"
     }
   ],
   "pinData": {},
@@ -273,17 +309,12 @@
       "main": [
         [
           {
-            "node": "15m",
+            "node": "consolidado",
             "type": "main",
             "index": 0
           },
           {
-            "node": "1h",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "4h",
+            "node": "1w",
             "type": "main",
             "index": 0
           },
@@ -293,51 +324,17 @@
             "index": 0
           },
           {
-            "node": "1w",
+            "node": "4h",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "HTML1": {
-      "main": [
-        [
+          },
           {
-            "node": "Respond to Webhook",
+            "node": "1h",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "15m": {
-      "main": [
-        [
+          },
           {
-            "node": "Edit Fields2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "4h": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "1h": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
+            "node": "15m",
             "type": "main",
             "index": 0
           }
@@ -348,58 +345,47 @@
       "main": [
         [
           {
-            "node": "HTML1",
+            "node": "Template final",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "1d": {
+    "consolidado": {
       "main": [
         [
           {
-            "node": "Edit Fields4",
+            "node": "set_consolidado",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields2": {
+    "set_consolidado": {
       "main": [
         [
           {
             "node": "Merge",
             "type": "main",
-            "index": 4
+            "index": 0
           }
         ]
       ]
     },
-    "Edit Fields1": {
+    "1w": {
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "set-1w",
             "type": "main",
-            "index": 3
+            "index": 0
           }
         ]
       ]
     },
-    "Edit Fields3": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 2
-          }
-        ]
-      ]
-    },
-    "Edit Fields4": {
+    "set-1w": {
       "main": [
         [
           {
@@ -410,22 +396,99 @@
         ]
       ]
     },
-    "1w": {
+    "1d": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "set-1d",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "set-1d": {
       "main": [
         [
           {
             "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "4h": {
+      "main": [
+        [
+          {
+            "node": "set-4h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set-4h": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "1h": {
+      "main": [
+        [
+          {
+            "node": "set-1h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set-1h": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "15m": {
+      "main": [
+        [
+          {
+            "node": "set-15m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set-15m": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Template final": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -437,7 +500,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a321884e-8c74-4739-b33b-44cf48c0e122",
+  "versionId": "3f75d2b2-24db-4127-86fd-e5f567b3b770",
   "meta": {
     "instanceId": "df70ff04e1b45ccc1482849dfc7bcfb5dca43eb687554e47ff8dc55a9291bcc5"
   },

@@ -1,70 +1,129 @@
-
 <div class="grafico">
   <div class="grafico-titulo">
-    <span class="grafico-label">Tempo gráfico</span>
-    <span class="etiqueta-invertida">1w</span>
+    <span class="grafico-label">Score consolidado</span>
+    <!--<span class="etiqueta-invertida">Final</span>-->
   </div>
 
-  <div class="gauge-wrapper">
-    <canvas id="gaugeChart_1w"></canvas>
+  <div class="gauge-wrapper" style="height: 180px;">
+    <canvas id="gaugePonteiro_consolidado" style="height: 100%; width: 100%;"></canvas>
   </div>
 
-  <div id="label_1w" class="classificacao">{{ $json.emas["1w"].analise.classificacao }}</div>
-
+  <div id="label_ponteiro" class="classificacao">{{ $json.consolidado.classificacao }}</div>
+  
   <div class="tooltip">
-    ℹ️
-    <span class="tooltip-text">{{ $json.emas["1w"].analise.observacao }}</span>
+    <svg xmlns="http://www.w3.org/2000/svg"
+       width="22" height="22" viewBox="0 0 24 24"
+       fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+       class="info-icon">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+    <span class="tooltip-text">{{ $json.consolidado.racional }}</span>
   </div>
 </div>
 
 <script>
-  const score_1w = {{ $json.emas["1w"].analise.score }};
-  const restante_1w = 10 - score_1w;
+(function waitForCanvas() {
+  const canvas = document.getElementById('gaugePonteiro_consolidado');
+  if (!canvas || !canvas.getContext) {
+    return requestAnimationFrame(waitForCanvas);
+  }
 
-  const cor_1w = score_1w >= 7 ? '#00e676' :
-                   score_1w >= 4 ? '#ffc107' :
-                   '#f44336';
+  const scoreReal = {{ $json.consolidado.score }};
+  const score = scoreReal * 10;
+  const ctx = canvas.getContext('2d');
 
-  const ctx_1w = document.getElementById('gaugeChart_1w').getContext('2d');
-
-  new Chart(ctx_1w, {
+  new Chart(ctx, {
     type: 'doughnut',
     data: {
+      labels: ['Score'],
       datasets: [{
-        data: [score_1w, restante_1w],
-        backgroundColor: [cor_1w, '#6D676E'],
-        borderRadius: [0, 0],
+        data: [100],
+        backgroundColor: ['#0000'],
         borderWidth: 0,
+        cutout: '80%',
       }]
     },
     options: {
       responsive: true,
-      rotation: -120,
-      circumference: 240,
+      rotation: -Math.PI,
+      circumference: Math.PI,
       cutout: '80%',
       plugins: {
         tooltip: { enabled: false },
         legend: { display: false }
-      }
+      },
     },
     plugins: [{
-      id: 'centerText_1w',
-      beforeDraw: (chart) => {
-        const { width, height } = chart;
+      id: 'customGauge',
+      afterDraw: (chart) => {
         const ctx = chart.ctx;
-        const scoreText = String(score_1w);
+        const angle = (score / 100) * Math.PI;
+        const cx = chart.width / 2;
+        const cy = chart.height - 40; // ⬆️ sobe tudo no gráfico
+        const r = chart.width / 2.2;
+
         ctx.save();
-        ctx.font = "bold 26px Arial";
-        ctx.fillStyle = "#fff";
+
+        const drawArc = (start, end, color) => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, start, end);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 16;
+          ctx.lineCap = "round";
+          ctx.stroke();
+        };
+
+        drawArc(Math.PI, Math.PI + Math.PI * 0.2, "#f44336");      // vermelho
+        drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4, "#ff5722");   // laranja escuro
+        drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6, "#ff9800");   // laranja claro
+        drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8, "#9acb82");   // verde limão
+        drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI, "#4caf50");   // verde forte
+
+
+        const x = cx + r * Math.cos(Math.PI + angle);
+        const y = cy + r * Math.sin(Math.PI + angle);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ccc';
+        ctx.fill();
+
+        // 🔢 Texto central
+        ctx.font = "bold 20px Arial";
+        ctx.fillStyle = "#888";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(scoreText, width / 2, height / 2 + 10);
+        ctx.fillText(score.toFixed(0), cx, cy - 30);
+
+        // 🔢 Extremidades 0 e 100 alinhadas ao arco
+        ctx.font = "bold 12px Arial";
+        ctx.fillStyle = "#888";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        
+        // "0" à esquerda (início do arco)
+        const x0 = cx + r * Math.cos(Math.PI);
+        const y0 = cy + r * Math.sin(Math.PI);
+        ctx.fillText("0", x0, y0 + 20);
+        
+        // "100" à direita (fim do arco)
+        const x100 = cx + r * Math.cos(0);
+        const y100 = cy + r * Math.sin(0);
+        ctx.fillText("100", x100 -6, y100 + 20);
+
         ctx.restore();
       }
     }]
   });
-
-  document.getElementById('label_1w').style.color = cor_1w;
+})();
 </script>
 
 <style>

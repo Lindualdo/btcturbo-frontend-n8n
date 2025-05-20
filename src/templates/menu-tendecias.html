@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BTC Turbo - Força da tendência de alta</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #0f111a;
+      color: #fff;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #f7931a;
+      margin-bottom: 20px;
+      padding: 0 10px;
+      font-weight: 700;
+    }
+
+      .menu-scroll {
+      display: flex;
+      justify-content: center; /* 🔸 Centraliza no desktop */
+      gap: 10px;
+      margin-bottom: 30px;
+      padding: 8px;
+      border-bottom: 1px solid #333;
+    }
+    
+    /* Ativa scroll horizontal apenas no mobile */
+    @media (max-width: 768px) {
+      .menu-scroll {
+        overflow-x: auto;
+        justify-content: flex-start;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    
+      .menu-scroll::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+
+    .menu-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .menu-scroll a {
+      flex: 0 0 auto;
+      background-color: transparent;
+      color: #fff;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: 0.3s;
+      font-size: 16px;
+    }
+
+    .menu-scroll a:hover,
+    .menu-scroll a:focus {
+      color: #f7931a;
+      border-bottom: 3px solid #f7931a;
+    }
+
+    .menu-scroll a.ativo {
+      color: #f7931a;
+      border-bottom: 3px solid #f7931a;
+      background-color: #1e1e1e;
+    }
+
+    .dashboard-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding-bottom: 30px;
+    }
+
+    .grafico {
+      width: 240px;
+      background: #161b22;
+      border-radius: 20px;
+      padding: 20px 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    .gauge-wrapper {
+      height: 180px !important;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .info-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+   }
+      
+    .classificacao {
+      margin-top: 12px;
+      color: #ccc;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .observacao {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #ccc;
+      padding: 0 10px;
+      white-space: pre-line;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .badge {
+      background-color: #f7931a;
+      color: #fff;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 3px 9px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 600px) {
+      .grafico {
+        width: 92vw;
+        margin-bottom: 20px;
+      }
+
+      .menu-scroll a {
+        font-size: 16px;
+        padding: 10px 14px;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+
+  <h1>BTC Turbo - Força da tendência de alta</h1>
+
+  <div class="menu-scroll">
+    <a href="/webhook/painel-forca-medias" class="ativo">Tendência</a>
+    <a href="/webhook/painel-forca-ciclos">Ciclos</a>
+    <a href="/webhook/painel-forca-fundamentos">Fundamentos</a>
+    <a href="/webhook/painel-risco-financeiro">R. Financeiro</a>
+    <a href="/webhook/painel-risco-estrutura">R. Estrutura</a>
+    <a href="/webhook/painel-risco-macro">R. Macro</a>
+    <a href="/webhook/painel-risco-tecnico">R. Técnico</a>
+    <a href="/webhook/painel-consolidado">Consolidado</a>
+  </div>
+
+  <div class="dashboard-grid">
+    {{ $json["score_consolidado"] }}
+    {{ $json["1w"] }}
+    {{ $json['1d'] }} 
+    {{ $json["4h"] }}
+    {{ $json['1h'] }} 
+    {{ $json['15m'] }}
+  </div>
+
+</body>
+</html>
