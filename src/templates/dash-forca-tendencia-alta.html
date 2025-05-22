@@ -289,13 +289,7 @@
         <span class="tooltip-text">{{  $json.consolidado.racional}}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_consolidado",
-            score: {{$json.consolidado.score}} * 10,
-            classificacaoId: "classificacao_consolidado"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
             
@@ -315,13 +309,7 @@
         <span class="tooltip-text">{{ $json.emas["1w"].analise.observacao }}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_1w",
-            score: {{ $json.emas["1w"].analise.score }} * 10,
-            classificacaoId: "classificacao_1w"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
             
@@ -341,13 +329,7 @@
         <span class="tooltip-text">{{ $json.emas["1d"].analise.observacao }}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_1d",
-            score: {{ $json.emas["1d"].analise.score }} * 10,
-            classificacaoId: "classificacao_1d"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
     
@@ -367,13 +349,7 @@
         <span class="tooltip-text">{{ $json.emas["4h"].analise.observacao }}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_4h",
-            score: {{ $json.emas["4h"].analise.score }} * 10,
-            classificacaoId: "classificacao_4h"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
 
@@ -393,13 +369,7 @@
         <span class="tooltip-text">{{ $json.emas["1h"].analise.observacao }}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_1h",
-            score: {{ $json.emas["1h"].analise.score }} * 10,
-            classificacaoId: "classificacao_1h"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
 
@@ -419,22 +389,47 @@
         <span class="tooltip-text">{{ $json.emas["15m"].analise.observacao }}</span>
       </div>
       <script>
-        setTimeout(() => {
-          renderGauge({
-            canvasId: "gaugeChart_15m",
-            score: {{ $json.emas["15m"].analise.score }} * 10,
-            classificacaoId: "classificacao_15m"
-          });
-        }, 0);
+        // Este script será executado pelo sistema de inicialização central
       </script>
     </div>
   </div>
 
   <!-- Script da função global -->
   <script>
+    // Aguarda o DOM e Chart.js estarem prontos
+    function waitForChartJS() {
+      return new Promise((resolve) => {
+        if (typeof Chart !== 'undefined') {
+          resolve();
+        } else {
+          const checkChart = setInterval(() => {
+            if (typeof Chart !== 'undefined') {
+              clearInterval(checkChart);
+              resolve();
+            }
+          }, 100);
+        }
+      });
+    }
+
     function renderGauge({ canvasId, score, classificacaoId }) {
       const canvas = document.getElementById(canvasId);
+      if (!canvas) {
+        console.error(`Canvas ${canvasId} não encontrado`);
+        return;
+      }
+
       const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error(`Contexto 2D não disponível para ${canvasId}`);
+        return;
+      }
+
+      // Limpa qualquer chart existente
+      const existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
 
       // Define a cor da classificação com base no score
       let corTexto;
@@ -444,100 +439,147 @@
       else if (score < 80) corTexto = "#9acb82";
       else corTexto = "#4caf50";
 
-      document.getElementById(classificacaoId).style.color = corTexto;
+      const classificacaoElement = document.getElementById(classificacaoId);
+      if (classificacaoElement) {
+        classificacaoElement.style.color = corTexto;
+      }
 
       // Cria o gráfico tipo doughnut com configuração sem preenchimento
-      new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Score'],
-          datasets: [{
-            data: [100],
-            backgroundColor: ['#0000'],
-            borderWidth: 0,
-            cutout: '80%',
-          }]
-        },
-        options: {
-          responsive: false,
-          rotation: -Math.PI,
-          circumference: Math.PI,
-          plugins: {
-            tooltip: { enabled: false },
-            legend: { display: false }
+      try {
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Score'],
+            datasets: [{
+              data: [100],
+              backgroundColor: ['#0000'],
+              borderWidth: 0,
+              cutout: '80%',
+            }]
           },
-        },
-        plugins: [{
-          id: 'customGauge',
-          afterDraw: (chart) => {
-            const ctx = chart.ctx;
-            const angle = (score / 100) * Math.PI;
-            const cx = chart.width / 2;
-            const cy = chart.height - 42;
-            const r = chart.width / 2.4;
+          options: {
+            responsive: false,
+            rotation: -Math.PI,
+            circumference: Math.PI,
+            plugins: {
+              tooltip: { enabled: false },
+              legend: { display: false }
+            },
+          },
+          plugins: [{
+            id: 'customGauge',
+            afterDraw: (chart) => {
+              const ctx = chart.ctx;
+              const angle = (score / 100) * Math.PI;
+              const cx = chart.width / 2;
+              const cy = chart.height - 42;
+              const r = chart.width / 2.4;
 
-            ctx.save();
+              ctx.save();
 
-            const drawArc = (start, end, color) => {
+              const drawArc = (start, end, color) => {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, start, end);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 16;
+                ctx.lineCap = "butt";
+                ctx.stroke();
+              };
+
+              drawArc(Math.PI, Math.PI + Math.PI * 0.2 - 0.01, "#e53935");
+              drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4 - 0.01, "#f57c00");
+              drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6 - 0.01, "#fbc02d");
+              drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8 - 0.01, "#9acb82");
+              drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI - 0.01, "#4caf50");
+
+              const pointerLength = r * 0.9;
+              const pointerWidth = 6;
+              const angleRadians = Math.PI + angle;
+
+              const x1 = cx + pointerLength * Math.cos(angleRadians);
+              const y1 = cy + pointerLength * Math.sin(angleRadians);
+              const x2 = cx + pointerWidth * Math.cos(angleRadians + Math.PI / 2);
+              const y2 = cy + pointerWidth * Math.sin(angleRadians + Math.PI / 2);
+              const x3 = cx + pointerWidth * Math.cos(angleRadians - Math.PI / 2);
+              const y3 = cy + pointerWidth * Math.sin(angleRadians - Math.PI / 2);
+
               ctx.beginPath();
-              ctx.arc(cx, cy, r, start, end);
-              ctx.strokeStyle = color;
-              ctx.lineWidth = 16;
-              ctx.lineCap = "butt";
-              ctx.stroke();
-            };
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x2, y2);
+              ctx.lineTo(x3, y3);
+              ctx.closePath();
+              ctx.fillStyle = "#444";
+              ctx.fill();
 
-            drawArc(Math.PI, Math.PI + Math.PI * 0.2 - 0.01, "#e53935");
-            drawArc(Math.PI + Math.PI * 0.2, Math.PI + Math.PI * 0.4 - 0.01, "#f57c00");
-            drawArc(Math.PI + Math.PI * 0.4, Math.PI + Math.PI * 0.6 - 0.01, "#fbc02d");
-            drawArc(Math.PI + Math.PI * 0.6, Math.PI + Math.PI * 0.8 - 0.01, "#9acb82");
-            drawArc(Math.PI + Math.PI * 0.8, 2 * Math.PI - 0.01, "#4caf50");
+              ctx.beginPath();
+              ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+              ctx.fillStyle = "#888";
+              ctx.fill();
 
-            const pointerLength = r * 0.9;
-            const pointerWidth = 6;
-            const angleRadians = Math.PI + angle;
+              ctx.font = "400 16px system-ui, sans-serif";
+              ctx.fillStyle = "#888";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
 
-            const x1 = cx + pointerLength * Math.cos(angleRadians);
-            const y1 = cy + pointerLength * Math.sin(angleRadians);
-            const x2 = cx + pointerWidth * Math.cos(angleRadians + Math.PI / 2);
-            const y2 = cy + pointerWidth * Math.sin(angleRadians + Math.PI / 2);
-            const x3 = cx + pointerWidth * Math.cos(angleRadians - Math.PI / 2);
-            const y3 = cy + pointerWidth * Math.sin(angleRadians - Math.PI / 2);
+              ctx.font = "400 11px system-ui, sans-serif";
+              ctx.fillStyle = "#888";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              const x0 = cx + r * Math.cos(Math.PI);
+              const y0 = cy + r * Math.sin(Math.PI);
+              const x100 = cx + r * Math.cos(0);
+              const y100 = cy + r * Math.sin(0);
+              ctx.fillText("0", x0, y0 + 15);
+              ctx.fillText("100", x100 - 3, y100 + 15);
 
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.lineTo(x3, y3);
-            ctx.closePath();
-            ctx.fillStyle = "#444";
-            ctx.fill();
+              ctx.restore();
+            }
+          }]
+        });
+      } catch (error) {
+        console.error(`Erro ao criar gráfico ${canvasId}:`, error);
+        // Tenta novamente após um delay
+        setTimeout(() => {
+          renderGauge({ canvasId, score, classificacaoId });
+        }, 500);
+      }
+    }
 
-            ctx.beginPath();
-            ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
-            ctx.fillStyle = "#888";
-            ctx.fill();
+    // Função para renderizar todos os gráficos
+    async function initializeCharts() {
+      await waitForChartJS();
+      
+      // Lista de todos os gráficos para renderizar
+      const charts = [
+        { canvasId: "gaugeChart_consolidado", score: 100, classificacaoId: "classificacao_consolidado" },
+        { canvasId: "gaugeChart_1w", score: 100, classificacaoId: "classificacao_1w" },
+        { canvasId: "gaugeChart_1d", score: 100, classificacaoId: "classificacao_1d" },
+        { canvasId: "gaugeChart_4h", score: 100, classificacaoId: "classificacao_4h" },
+        { canvasId: "gaugeChart_1h", score: 100, classificacaoId: "classificacao_1h" },
+        { canvasId: "gaugeChart_15m", score: 100, classificacaoId: "classificacao_15m" }
+      ];
 
-            ctx.font = "400 16px system-ui, sans-serif";
-            ctx.fillStyle = "#888";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-
-            ctx.font = "400 11px system-ui, sans-serif";
-            ctx.fillStyle = "#888";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            const x0 = cx + r * Math.cos(Math.PI);
-            const y0 = cy + r * Math.sin(Math.PI);
-            const x100 = cx + r * Math.cos(0);
-            const y100 = cy + r * Math.sin(0);
-            ctx.fillText("0", x0, y0 + 15);
-            ctx.fillText("100", x100 - 3, y100 + 15);
-
-            ctx.restore();
-          }
-        }]
+      // Renderiza com delay entre cada gráfico
+      charts.forEach((chart, index) => {
+        setTimeout(() => {
+          renderGauge(chart);
+        }, index * 200);
       });
     }
+
+    // Inicializa quando a página carregar
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeCharts);
+    } else {
+      initializeCharts();
+    }
+
+    // Re-renderiza se a janela for redimensionada
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(initializeCharts, 300);
+    });
   </script>
 </body>
 </html>
